@@ -2,16 +2,20 @@ name: Build Gh0st Client
 
 on:
   push:
+    branches: [main]
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Set up Java 25
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '25'
@@ -27,3 +31,16 @@ jobs:
         with:
           name: gh0st-client
           path: build/libs/*.jar
+
+      - name: Publish jar to the prebuilt branch
+        run: |
+          JAR=$(ls build/libs/*.jar | grep -v -- '-sources' | head -1)
+          mkdir -p /tmp/out && cp "$JAR" /tmp/out/gh0st-client.jar
+          echo "${GITHUB_SHA}" > /tmp/out/SOURCE_COMMIT
+          cd /tmp/out
+          git init -q -b prebuilt
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Gh0st Client build from ${GITHUB_SHA}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" prebuilt
