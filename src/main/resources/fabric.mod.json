@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "gh0st",
+  "version": "${version}",
+  "name": "Gh0st Client",
+  "description": "Custom main menu and a Right Shift menu for changing your mods' settings.",
+  "authors": ["Gh0st"],
+  "license": "MIT",
+  "icon": "assets/gh0st/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": ["dev.gh0st.client.Gh0stClient"]
+  },
+  "depends": {
+    "fabricloader": ">=0.19.5",
+    "minecraft": "~26.3",
+    "fabric-api": "*"
+  },
+  "suggests": {
+    "modmenu": "*"
+  }
+}
